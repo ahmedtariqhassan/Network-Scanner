@@ -1,0 +1,39 @@
+import socket
+import nmap
+
+
+# Define the IP address range to scan
+ip_range = ['192.168.0.1', '192.168.0.2', '192.168.0.3']
+
+# Define the range of ports to scan
+port_range = range(1, 100)
+
+# Define a function to check if a port is open
+def check_port(ip, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(1)
+    result = sock.connect_ex((ip, port))
+    if result == 0:
+        print(f"Port {port} is open on {ip}")
+    sock.close()
+
+# Scan all IP addresses in the range
+for ip in ip_range:
+    print(f"Scanning IP address: {ip}")
+    # Scan all ports in the range for the current IP address
+    for port in port_range:
+        check_port(ip, port)
+#Optimium code to scan for a range with regards to speed is by using nmap.
+def scan_ports(target):
+    scanner = nmap.PortScanner()
+    scanner.scan(target, arguments='-p 1-65535 -T4 -sS')
+    open_ports = []
+    for host in scanner.all_hosts():
+        for port in scanner[host]['tcp']:
+            if scanner[host]['tcp'][port]['state'] == 'open':
+                open_ports.append(port)
+    return open_ports
+
+target = '192.168.1.1-100'  # Replace with your target IP address range
+open_ports = scan_ports(target)
+print('Open ports:', open_ports)

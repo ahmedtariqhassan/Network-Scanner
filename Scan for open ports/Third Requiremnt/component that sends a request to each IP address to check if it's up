@@ -1,0 +1,9 @@
+import subprocess
+
+def check_ip(ip):
+    # Send a ping request to the IP address and wait for a response
+    result = subprocess.call(['ping', '-c', '1', '-w', '1', ip], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    if result == 0:
+        return True  # The IP address is up
+    else:
+        return False  # The IP address is down
